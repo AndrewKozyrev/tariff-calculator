@@ -1,4 +1,4 @@
-package ru.fastdelivery.api.request;
+package ru.fastdelivery.presentation.api.request;
 
 import java.math.BigDecimal;
 
