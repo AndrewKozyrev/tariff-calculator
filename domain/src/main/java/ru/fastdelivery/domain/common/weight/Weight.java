@@ -10,6 +10,10 @@ import java.util.Objects;
 public class Weight {
     private final BigDecimal weightGrams;
 
+    public static Weight zero(){
+        return new Weight(BigDecimal.ZERO);
+    }
+
     Weight(BigDecimal weightGrams) {
         var normalizeWeight = weightGrams.compareTo(BigDecimal.ZERO) > 0
            && weightGrams.compareTo(BigDecimal.ONE) < 0 ? BigDecimal.ONE : weightGrams;
@@ -32,5 +36,13 @@ public class Weight {
     @Override
     public int hashCode() {
         return Objects.hash(weightGrams);
+    }
+
+    public Weight add(Weight additionalWeight) {
+        if(additionalWeight.weightGrams.compareTo(BigDecimal.ZERO) < 0) {
+            return new Weight(this.weightGrams);
+        }
+
+        return new Weight(this.weightGrams.add(additionalWeight.weightGrams));
     }
 }
