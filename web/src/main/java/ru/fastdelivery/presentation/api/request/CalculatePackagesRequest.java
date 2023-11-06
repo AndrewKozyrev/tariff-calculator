@@ -9,6 +9,8 @@ public record CalculatePackagesRequest(
         @NotNull
         @NotEmpty
         List<CargoPackage> packages,
-        String currencyName
+
+        @NotNull
+        String currencyCode
 ) {
 }

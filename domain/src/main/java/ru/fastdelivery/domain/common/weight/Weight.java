@@ -1,31 +1,36 @@
 package ru.fastdelivery.domain.common.weight;
 
-import lombok.Getter;
-
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Objects;
 
-@Getter
-public class Weight {
-    private final BigDecimal weightGrams;
+public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
 
-    public static Weight zero(){
-        return new Weight(BigDecimal.ZERO);
+    public Weight {
+        if (isLessThanZero(weightGrams)) {
+            throw new IllegalArgumentException("Weight cannot be below Zero!");
+        }
     }
 
-    Weight(BigDecimal weightGrams) {
-        var normalizeWeight = weightGrams.compareTo(BigDecimal.ZERO) > 0
-           && weightGrams.compareTo(BigDecimal.ONE) < 0 ? BigDecimal.ONE : weightGrams;
+    private static boolean isLessThanZero(BigInteger price) {
+        return BigInteger.ZERO.compareTo(price) > 0;
+    }
 
-        this.weightGrams = normalizeWeight.setScale(0, RoundingMode.HALF_UP);
+    public static Weight zero() {
+        return new Weight(BigInteger.ZERO);
+    }
+
+    public BigDecimal kilograms() {
+        return new BigDecimal(weightGrams)
+                .divide(BigDecimal.valueOf(1000), 100, RoundingMode.HALF_UP);
+    }
+
+    public Weight add(Weight additionalWeight) {
+        return new Weight(this.weightGrams.add(additionalWeight.weightGrams));
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
@@ -33,16 +38,13 @@ public class Weight {
         return weightGrams.compareTo(weight.weightGrams) == 0;
     }
 
+
     @Override
-    public int hashCode() {
-        return Objects.hash(weightGrams);
+    public int compareTo(Weight w) {
+        return w.weightGrams().compareTo(weightGrams());
     }
 
-    public Weight add(Weight additionalWeight) {
-        if(additionalWeight.weightGrams.compareTo(BigDecimal.ZERO) < 0) {
-            return new Weight(this.weightGrams);
-        }
-
-        return new Weight(this.weightGrams.add(additionalWeight.weightGrams));
+    public boolean greaterThan(Weight w) {
+        return weightGrams().compareTo(w.weightGrams()) > 0;
     }
 }

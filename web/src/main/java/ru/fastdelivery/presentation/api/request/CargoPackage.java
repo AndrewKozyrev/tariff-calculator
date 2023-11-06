@@ -1,8 +1,8 @@
 package ru.fastdelivery.presentation.api.request;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public record CargoPackage(
-        BigDecimal weight
+        BigInteger weight
 ) {
 }
