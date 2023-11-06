@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.domain.common.weight.Weight;
 import ru.fastdelivery.domain.delivery.pack.Pack;
 import ru.fastdelivery.domain.delivery.shipment.Shipment;
@@ -19,6 +20,7 @@ import ru.fastdelivery.usecase.TariffCalculateUseCase;
 @RequiredArgsConstructor
 public class CalculateController {
     private final TariffCalculateUseCase tariffCalculateUseCase;
+    private final CurrencyFactory currencyFactory;
 
     @PostMapping
     public CalculatePackagesResponse calculate(@Valid @RequestBody CalculatePackagesRequest request) {
@@ -28,7 +30,7 @@ public class CalculateController {
                 .map(Pack::new)
                 .toList();
 
-        var shipment = new Shipment(packsWeights);
+        var shipment = new Shipment(packsWeights, currencyFactory.create(request.currencyCode()));
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
         return new CalculatePackagesResponse(calculatedPrice);
     }

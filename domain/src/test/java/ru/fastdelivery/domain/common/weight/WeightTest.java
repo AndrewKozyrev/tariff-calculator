@@ -2,6 +2,8 @@ package ru.fastdelivery.domain.common.weight;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,13 +22,32 @@ class WeightTest {
     }
 
     @Test
-    void equalsTest() {
-        var weight1 = new Weight(new BigInteger("1000"));
-        var weight2 = new Weight(new BigInteger("1000"));
+    void equalsTypeWidth_same() {
+        var weight = new Weight(new BigInteger("1000"));
+        var weightSame = new Weight(new BigInteger("1000"));
 
-        assertThat(weight1)
-                .isEqualTo(weight2)
-                .hasSameHashCodeAs(weight2);
+        assertThat(weight)
+                .isEqualTo(weightSame)
+                .hasSameHashCodeAs(weightSame);
+    }
+
+    @Test
+    void equalsNull_false() {
+        var weight = new Weight(new BigInteger("4"));
+
+        assertThat(weight).isNotEqualTo(null);
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "1000, 1, -1",
+            "199, 199, 0",
+            "50, 999, 1" })
+    void compareToTest(BigInteger low, BigInteger high, int expected) {
+        var weightLow = new Weight(low);
+        var weightHigh = new Weight(high);
+
+        assertThat(weightLow.compareTo(weightHigh))
+                .isEqualTo(expected);
     }
 
     @Test

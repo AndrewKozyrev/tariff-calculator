@@ -6,14 +6,20 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ru.fastdelivery.ControllerTest;
+import ru.fastdelivery.domain.common.currency.CurrencyFactory;
+import ru.fastdelivery.domain.common.price.Price;
 import ru.fastdelivery.presentation.api.request.CalculatePackagesRequest;
 import ru.fastdelivery.presentation.api.request.CargoPackage;
+import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
+import ru.fastdelivery.usecase.CalculatedShipmentPrice;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 class CalculateControllerTest extends ControllerTest {
@@ -21,15 +27,22 @@ class CalculateControllerTest extends ControllerTest {
     final String baseCalculateApi = "/api/v1/calculate/";
     @MockBean
     TariffCalculateUseCase useCase;
+    @MockBean
+    CurrencyFactory currencyFactory;
 
     @Test
     @DisplayName("Валидные данные для расчета стоимость -> Ответ 200")
     void whenValidInputData_thenReturn200() {
         var request = new CalculatePackagesRequest(
                 List.of(new CargoPackage(BigInteger.TEN)), "RUB");
-        when(currencyPropertiesProvider.isAvailable("RUB")).thenReturn(true);
+        var rub = new CurrencyFactory(code -> true).create("RUB");
+        when(useCase.calc(any())).thenReturn(new CalculatedShipmentPrice(
+                new Price(BigDecimal.valueOf(10), rub),
+                new Price(BigDecimal.valueOf(1), rub)
+        ));
 
-        ResponseEntity<String> response = restTemplate.postForEntity(baseCalculateApi, request, String.class);
+        ResponseEntity<CalculatePackagesResponse> response =
+                restTemplate.postForEntity(baseCalculateApi, request, CalculatePackagesResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
