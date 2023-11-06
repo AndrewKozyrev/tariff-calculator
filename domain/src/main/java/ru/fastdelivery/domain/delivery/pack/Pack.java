@@ -4,6 +4,11 @@ import ru.fastdelivery.domain.common.weight.Weight;
 
 import java.math.BigInteger;
 
+/**
+ * Упаковка груза
+ *
+ * @param weight вес товаров в упаковке
+ */
 public record Pack(Weight weight) {
 
     private static final Weight maxWeight = new Weight(BigInteger.valueOf(150_000));

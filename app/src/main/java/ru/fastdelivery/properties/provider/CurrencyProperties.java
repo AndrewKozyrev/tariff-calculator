@@ -1,4 +1,4 @@
-package ru.fastdelivery.properties_provider;
+package ru.fastdelivery.properties.provider;
 
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,6 +7,9 @@ import ru.fastdelivery.domain.common.currency.CurrencyPropertiesProvider;
 
 import java.util.List;
 
+/**
+ * Настройки валют из конфига
+ */
 @Configuration
 @ConfigurationProperties("currency")
 @Setter

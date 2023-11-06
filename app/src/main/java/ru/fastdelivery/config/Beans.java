@@ -7,6 +7,9 @@ import ru.fastdelivery.domain.common.currency.CurrencyPropertiesProvider;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
 import ru.fastdelivery.usecase.WeightPriceProvider;
 
+/**
+ * Определение реализаций бинов для всех модулей приложения
+ */
 @Configuration
 public class Beans {
 

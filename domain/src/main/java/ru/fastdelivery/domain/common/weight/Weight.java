@@ -4,6 +4,11 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
+/**
+ * Общий класс веса
+ *
+ * @param weightGrams вес в граммах
+ */
 public record Weight(BigInteger weightGrams) implements Comparable<Weight> {
 
     public Weight {

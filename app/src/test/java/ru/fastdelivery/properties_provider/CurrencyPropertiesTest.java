@@ -2,6 +2,7 @@ package ru.fastdelivery.properties_provider;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.fastdelivery.properties.provider.CurrencyProperties;
 
 import java.util.List;
 

@@ -30,10 +30,11 @@ public class CalculateController {
     @PostMapping
     @Operation(summary = "Расчет стоимости по упаковкам груза")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successful operation"),
-            @ApiResponse(responseCode = "400", description = "Invalid input provided")
+        @ApiResponse(responseCode = "200", description = "Successful operation"),
+        @ApiResponse(responseCode = "400", description = "Invalid input provided")
     })
-    public CalculatePackagesResponse calculate(@Valid @RequestBody CalculatePackagesRequest request) {
+    public CalculatePackagesResponse calculate(
+            @Valid @RequestBody CalculatePackagesRequest request) {
         var packsWeights = request.packages().stream()
                 .map(CargoPackage::weight)
                 .map(Weight::new)

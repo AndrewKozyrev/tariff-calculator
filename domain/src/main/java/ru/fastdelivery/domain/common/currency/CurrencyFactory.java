@@ -2,6 +2,9 @@ package ru.fastdelivery.domain.common.currency;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Создание валюты с проверками
+ */
 @RequiredArgsConstructor
 public class CurrencyFactory {
 

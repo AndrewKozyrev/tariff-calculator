@@ -6,6 +6,10 @@ import ru.fastdelivery.domain.delivery.pack.Pack;
 
 import java.util.List;
 
+/**
+ * @param packages упаковки в грузе
+ * @param currency валюта объявленная для груза
+ */
 public record Shipment(
         List<Pack> packages,
         Currency currency
