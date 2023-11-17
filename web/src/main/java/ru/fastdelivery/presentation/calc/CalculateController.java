@@ -43,7 +43,8 @@ public class CalculateController {
 
         var shipment = new Shipment(packsWeights, currencyFactory.create(request.currencyCode()));
         var calculatedPrice = tariffCalculateUseCase.calc(shipment);
-        return new CalculatePackagesResponse(calculatedPrice);
+        var minimalPrice = tariffCalculateUseCase.minimalPrice();
+        return new CalculatePackagesResponse(calculatedPrice, minimalPrice);
     }
 }
 

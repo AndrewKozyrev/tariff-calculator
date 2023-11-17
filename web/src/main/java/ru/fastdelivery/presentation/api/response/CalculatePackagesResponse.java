@@ -1,6 +1,6 @@
 package ru.fastdelivery.presentation.api.response;
 
-import ru.fastdelivery.usecase.CalculatedShipmentPrice;
+import ru.fastdelivery.domain.common.price.Price;
 
 import java.math.BigDecimal;
 
@@ -9,17 +9,15 @@ public record CalculatePackagesResponse(
         BigDecimal minimalPrice,
         String currencyCode
 ) {
-    public CalculatePackagesResponse(CalculatedShipmentPrice prices) {
-        this(prices.totalPrice().amount(),
-                prices.minimalPrice().amount(),
-                prices.totalPrice().currency().getCode());
+    public CalculatePackagesResponse(Price totalPrice, Price minimalPrice) {
+        this(totalPrice.amount(), minimalPrice.amount(), totalPrice.currency().getCode());
 
-        if (currencyIsNotEqual(prices)) {
+        if (currencyIsNotEqual(totalPrice, minimalPrice)) {
             throw new IllegalArgumentException("Currency codes must be the same");
         }
     }
 
-    private static boolean currencyIsNotEqual(CalculatedShipmentPrice prices) {
-        return !prices.totalPrice().currency().equals(prices.minimalPrice().currency());
+    private static boolean currencyIsNotEqual(Price priceLeft, Price priceRight) {
+        return !priceLeft.currency().equals(priceRight.currency());
     }
 }

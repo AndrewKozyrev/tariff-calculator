@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import ru.fastdelivery.domain.common.currency.CurrencyFactory;
 import ru.fastdelivery.domain.common.price.Price;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
-import ru.fastdelivery.usecase.CalculatedShipmentPrice;
 
 import java.math.BigDecimal;
 
@@ -18,26 +17,24 @@ class CalculatePackagesResponseTest {
     @Test
     @DisplayName("Если валюты разные -> ошибка создания объекта")
     void whenCurrenciesAreNotEqual_thenException() {
-        var calculatedPrice = new CalculatedShipmentPrice(
-                new Price(new BigDecimal(100), new CurrencyFactory(code -> true).create("USD")),
-                new Price(new BigDecimal(5), new CurrencyFactory(code -> true).create("RUB")));
+        var calculatedPrice = new Price(new BigDecimal(100), new CurrencyFactory(code -> true).create("USD"));
+        var minimalPrice = new Price(new BigDecimal(5), new CurrencyFactory(code -> true).create("RUB"));
 
         assertThrows(IllegalArgumentException.class,
-                () -> new CalculatePackagesResponse(calculatedPrice));
+                () -> new CalculatePackagesResponse(calculatedPrice, minimalPrice));
     }
 
     @Test
     @DisplayName("Если валюты одинаковые -> объект создан")
     void whenCurrenciesAreEqual_thenObjectCreated() {
         var usd = new CurrencyFactory(code -> true).create("USD");
-        var calculatedPrice = new CalculatedShipmentPrice(
-                new Price(new BigDecimal(100), usd),
-                new Price(new BigDecimal(5), usd));
+        var calculatedPrice = new Price(new BigDecimal(100), usd);
+        var minimalPrice = new Price(new BigDecimal(5), usd);
 
         var expected = new CalculatePackagesResponse(
-                new BigDecimal(100),  new BigDecimal(5), usd.getCode());
+                new BigDecimal(100), new BigDecimal(5), usd.getCode());
 
-        var actual = new CalculatePackagesResponse(calculatedPrice);
+        var actual = new CalculatePackagesResponse(calculatedPrice, minimalPrice);
 
         assertThat(actual).usingRecursiveComparison()
                 .withComparatorForType(BigDecimalComparator.BIG_DECIMAL_COMPARATOR, BigDecimal.class)

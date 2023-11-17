@@ -11,7 +11,6 @@ import ru.fastdelivery.domain.common.price.Price;
 import ru.fastdelivery.presentation.api.request.CalculatePackagesRequest;
 import ru.fastdelivery.presentation.api.request.CargoPackage;
 import ru.fastdelivery.presentation.api.response.CalculatePackagesResponse;
-import ru.fastdelivery.usecase.CalculatedShipmentPrice;
 import ru.fastdelivery.usecase.TariffCalculateUseCase;
 
 import java.math.BigDecimal;
@@ -36,10 +35,8 @@ class CalculateControllerTest extends ControllerTest {
         var request = new CalculatePackagesRequest(
                 List.of(new CargoPackage(BigInteger.TEN)), "RUB");
         var rub = new CurrencyFactory(code -> true).create("RUB");
-        when(useCase.calc(any())).thenReturn(new CalculatedShipmentPrice(
-                new Price(BigDecimal.valueOf(10), rub),
-                new Price(BigDecimal.valueOf(1), rub)
-        ));
+        when(useCase.calc(any())).thenReturn(new Price(BigDecimal.valueOf(10), rub));
+        when(useCase.minimalPrice()).thenReturn(new Price(BigDecimal.valueOf(5), rub));
 
         ResponseEntity<CalculatePackagesResponse> response =
                 restTemplate.postForEntity(baseCalculateApi, request, CalculatePackagesResponse.class);
